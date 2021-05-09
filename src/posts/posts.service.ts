@@ -1,8 +1,15 @@
 import { Injectable } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
 
 @Injectable()
 export class PostsService {
-    private posts = [
+    constructor(
+        private readonly usersService: UsersService
+    ) {
+
+    }
+
+    private posts: any = [
         {
             id: 1,
             title: 'Post 1',
@@ -26,12 +33,26 @@ export class PostsService {
         }
     ]
 
-    findAll(): Array<{}> {
-        return this.posts;
+    findAll(): any {
+        const posts: Array<{}> = [];
+        this.posts.map(post => {
+            posts.push(
+                {   
+                    id: post.id,
+                    title: post.title,
+                    text: post.text,
+                    author: this.usersService.findById(String(post.author)),
+                    comments: post.comments
+                }
+            )
+        });
+        return posts;
     }
 
     findById(id: string): Object {
-        return this.posts.find((item: any) => item.id === +id);
+        const post = Object.assign({}, this.posts.find((item: any) => item.id === +id));
+        post.author = this.usersService.findById(String(post.author));
+        return post;
     }
 
     createPost(createPost): string {
