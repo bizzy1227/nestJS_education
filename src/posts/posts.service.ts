@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class PostsService {
-    posts = [
+    private posts = [
         {
             id: 1,
             title: 'Post 1',
