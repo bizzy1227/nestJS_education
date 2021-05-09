@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
+import { CommentsService } from 'src/comments/comments.service';
 
 @Injectable()
 export class PostsService {
     constructor(
-        private readonly usersService: UsersService
+        private readonly usersService: UsersService,
+        private readonly commentsService: CommentsService
     ) {
 
     }
@@ -34,24 +36,25 @@ export class PostsService {
     ]
 
     findAll(): any {
-        const posts: Array<{}> = [];
+        const newPosts: Array<{}> = [];
         this.posts.map(post => {
-            posts.push(
+            newPosts.push(
                 {   
                     id: post.id,
                     title: post.title,
                     text: post.text,
                     author: this.usersService.findById(String(post.author)),
-                    comments: post.comments
+                    comments: this.commentsService.findAll(post.comments)
                 }
             )
         });
-        return posts;
+        return newPosts;
     }
 
     findById(id: string): Object {
         const post = Object.assign({}, this.posts.find((item: any) => item.id === +id));
         post.author = this.usersService.findById(String(post.author));
+        post.comments = this.commentsService.findAll(post.comments);
         return post;
     }
 
@@ -84,7 +87,9 @@ export class PostsService {
         return 'Post deleted';
     }
 
-    addCommentToPost() {
-
+    addCommentToPost(idPost: string, idComment: string) {
+        const post = this.posts.find(item => item.id === +idPost);
+        post.comments.push(+idComment);
+        return 'Comment added';
     }
 }

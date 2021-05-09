@@ -34,4 +34,10 @@ export class PostsController {
     updatePost(@Param('id') id: string, @Body() updatePost: Object) {
         return this.postService.updatePost(id, updatePost);
     }
+
+    @HttpCode(HttpStatus.CREATED)
+    @Patch(':idPost/:idComment')
+    addCommentToPost(@Param('idPost') idPost: string, @Param('idComment') idComment: string): string {
+        return this.postService.addCommentToPost(idPost, idComment);
+    }
 }
