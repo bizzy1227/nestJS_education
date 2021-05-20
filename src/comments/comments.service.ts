@@ -26,12 +26,8 @@ export class CommentsService {
         },
     ]
 
-    findAll(commentsIds: Array<number>): Array<{}> {
-        const newPosts: Array<{}> = [];
-        commentsIds.forEach(id => {
-            newPosts.push(this.comments.find(item => item.id === id))
-        })
-        return newPosts;
+    findAll(): Array<{}> {
+        return this.comments;
     }
 
     findById(id: string): Object {

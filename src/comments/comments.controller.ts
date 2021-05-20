@@ -8,7 +8,7 @@ export class CommentsController {
     @HttpCode(HttpStatus.OK)
     @Get()
     getAllComments(): Array<{}> {
-      return this.commentsService.findAll([1,2,3,4,5]);
+      return this.commentsService.findAll();
     }
 
     @HttpCode(HttpStatus.OK)

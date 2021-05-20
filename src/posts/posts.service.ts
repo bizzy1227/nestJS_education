@@ -37,24 +37,33 @@ export class PostsService {
 
     findAll(): any {
         const newPosts: Array<{}> = [];
+        let commentsForPost: Array<{}> = [];
         this.posts.map(post => {
+            post.comments.map(commentId => {
+                commentsForPost.push(this.commentsService.findById(commentId));
+            })
             newPosts.push(
                 {   
                     id: post.id,
                     title: post.title,
                     text: post.text,
                     author: this.usersService.findById(String(post.author)),
-                    comments: this.commentsService.findAll(post.comments)
+                    comments: commentsForPost
                 }
             )
+            commentsForPost = [];
         });
         return newPosts;
     }
 
     findById(id: string): Object {
+        const commentsForPost: Array<{}> = [];
         const post = Object.assign({}, this.posts.find((item: any) => item.id === +id));
         post.author = this.usersService.findById(String(post.author));
-        post.comments = this.commentsService.findAll(post.comments);
+        post.comments.map(commentId => {
+            commentsForPost.push(this.commentsService.findById(commentId));
+        })
+        post.comments = commentsForPost;
         return post;
     }
 
