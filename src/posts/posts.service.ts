@@ -1,12 +1,17 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Post } from '@nestjs/common';
 import { UsersService } from 'src/users/users.service';
 import { CommentsService } from 'src/comments/comments.service';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
+import { PostDocument, Posts } from './schemas/post.schema';
+import { CreatePostDto } from './dto/create-post.dto';
 
 @Injectable()
 export class PostsService {
     constructor(
         private readonly usersService: UsersService,
-        private readonly commentsService: CommentsService
+        private readonly commentsService: CommentsService,
+        @InjectModel(Post.name) private postModel: Model<PostDocument>
     ) {
 
     }
@@ -35,25 +40,8 @@ export class PostsService {
         }
     ]
 
-    findAll(): any {
-        const newPosts: Array<{}> = [];
-        let commentsForPost: Array<{}> = [];
-        this.posts.map(post => {
-            post.comments.map(commentId => {
-                commentsForPost.push(this.commentsService.findById(commentId));
-            })
-            newPosts.push(
-                {   
-                    id: post.id,
-                    title: post.title,
-                    text: post.text,
-                    author: this.usersService.findById(String(post.author)),
-                    comments: commentsForPost
-                }
-            )
-            commentsForPost = [];
-        });
-        return newPosts;
+    findAll(): Promise<Posts[]> {;
+        return this.postModel.find().exec();
     }
 
     findById(id: string): Object {
@@ -67,16 +55,9 @@ export class PostsService {
         return post;
     }
 
-    createPost(createPost): string {
-        const newPost = {
-            id: Date.now(),
-            title: `Post ${this.posts.length + 1}`,
-            text: `${createPost.text}, id: ${Date.now()}`,
-            author: 3,
-            comments: []
-        }
-        this.posts.push(newPost);
-        return 'Post created';
+    createPost(createPost: CreatePostDto) {
+        const createdPost = new this.postModel(createPost);
+        return createdPost.save();
     }
 
     updatePost(id: string, updatePost): string {

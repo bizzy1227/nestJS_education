@@ -1,5 +1,7 @@
 import { Controller, Get, Param, Post, Body, Delete, Patch, HttpCode, HttpStatus } from '@nestjs/common';
 import { PostsService } from './posts.service';
+import { CreatePostDto } from './dto/create-post.dto';
+import { Posts } from './schemas/post.schema';
 
 @Controller('posts')
 export class PostsController {
@@ -7,7 +9,7 @@ export class PostsController {
     
     @HttpCode(HttpStatus.OK)
     @Get()
-    getAllPosts(): Array<{}> {
+    getAllPosts(): Promise<Posts[]> {
       return this.postService.findAll();
     }
 
@@ -19,7 +21,7 @@ export class PostsController {
 
     @HttpCode(HttpStatus.CREATED)
     @Post()
-    createPost(@Body() createPost: Object): string {
+    createPost(@Body() createPost: CreatePostDto) {
         return this.postService.createPost(createPost);
     }
 
