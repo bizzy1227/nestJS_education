@@ -11,7 +11,7 @@ export class PostsService {
     constructor(
         private readonly usersService: UsersService,
         private readonly commentsService: CommentsService,
-        @InjectModel(Post.name) private postModel: Model<PostDocument>
+        @InjectModel(Posts.name) private postModel: Model<PostDocument>
     ) {
 
     }
