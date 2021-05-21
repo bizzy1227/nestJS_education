@@ -1,9 +1,24 @@
+import { IsArray, IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
+
+
 export class CreatePostDto {
-    title: string;
 
-    text: string;
+    @IsString()
+    readonly title: string;
 
-    author: number;
+    @IsString()
+    @IsNotEmpty()
+    readonly text: string;
 
-    comments: Array<number>;
+    @IsNumber()
+    readonly author: number;
+
+    @IsString()
+    @IsEmail()
+    readonly email: string;
+
+    @IsArray()
+    readonly comments: Array<number>;
+
+
 }

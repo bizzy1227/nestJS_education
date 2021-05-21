@@ -1,9 +1,9 @@
 export class CreateCommentDto {
-    title: string;
+    readonly title: string;
 
-    text: string;
+    readonly text: string;
 
-    author: number;
+    readonly author: number;
 
-    comments: Array<number>;
+    readonly comments: Array<number>;
 }

@@ -1,3 +1,3 @@
 export class UpdatePostDto {
-    text: string;
+    readonly text: string;
 }

@@ -15,6 +15,9 @@ export class Posts {
   author: number;
 
   @Prop()
+  email: string;
+
+  @Prop()
   comments: Array<number>;
 }
 
