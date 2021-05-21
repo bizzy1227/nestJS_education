@@ -2,6 +2,7 @@ import { Controller, Get, Param, Post, Body, Delete, Patch, HttpCode, HttpStatus
 import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Posts } from './schemas/post.schema';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -27,13 +28,13 @@ export class PostsController {
 
     @HttpCode(HttpStatus.OK)
     @Delete(':id')
-    removePost(@Param('id') id: string): string {
+    removePost(@Param('id') id: string) {
         return this.postService.removePost(id);
     }
 
     @HttpCode(HttpStatus.CREATED)
     @Patch(':id')
-    updatePost(@Param('id') id: string, @Body() updatePost: Object) {
+    updatePost(@Param('id') id: string, @Body() updatePost: UpdatePostDto) {
         return this.postService.updatePost(id, updatePost);
     }
 
