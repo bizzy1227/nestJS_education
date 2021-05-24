@@ -1,9 +1,7 @@
+import { IsNotEmpty, IsString } from "class-validator";
+
 export class CreateCommentDto {
-    readonly title: string;
-
+    @IsString()
+    @IsNotEmpty()
     readonly text: string;
-
-    readonly author: number;
-
-    readonly comments: Array<number>;
 }

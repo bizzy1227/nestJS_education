@@ -5,5 +5,5 @@ export class CreateUserDto {
 
     author: number;
 
-    comments: Array<number>;
+    comments: Array<string>;
 }

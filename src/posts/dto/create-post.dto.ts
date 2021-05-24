@@ -18,7 +18,7 @@ export class CreatePostDto {
     readonly email: string;
 
     @IsArray()
-    readonly comments: Array<number>;
+    readonly comments: Array<string>;
 
 
 }

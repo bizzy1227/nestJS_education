@@ -18,7 +18,7 @@ export class Posts {
   email: string;
 
   @Prop()
-  comments: Array<number>;
+  comments: Array<string>;
 }
 
 export const PostSchema = SchemaFactory.createForClass(Posts);

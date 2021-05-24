@@ -3,6 +3,7 @@ import { PostsService } from './posts.service';
 import { CreatePostDto } from './dto/create-post.dto';
 import { Posts } from './schemas/post.schema';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
 
 @Controller('posts')
 export class PostsController {
@@ -39,8 +40,8 @@ export class PostsController {
     }
 
     @HttpCode(HttpStatus.CREATED)
-    @Patch(':idPost/:idComment')
-    addCommentToPost(@Param('idPost') idPost: string, @Param('idComment') idComment: string): string {
-        return this.postService.addCommentToPost(idPost, idComment);
+    @Post(':idPost')
+    addCommentToPost(@Param('idPost') idPost: string, @Body() createComment: CreateCommentDto) {
+        return this.postService.addCommentToPost(idPost, createComment);
     }
 }

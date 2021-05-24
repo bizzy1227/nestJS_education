@@ -6,6 +6,8 @@ import { Model } from 'mongoose';
 import { PostDocument, Posts } from './schemas/post.schema';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { CreateCommentDto } from 'src/comments/dto/create-comment.dto';
+import { async } from 'rxjs';
 
 @Injectable()
 export class PostsService {
@@ -17,36 +19,26 @@ export class PostsService {
 
     }
 
-    private posts: any = [
-        {
-            id: 1,
-            title: 'Post 1',
-            text: 'Test description',
-            author: 3,
-            comments: [1,2]
-        },
-        {
-            id: 2,
-            title: 'Post 2',
-            text: 'Test description 2',
-            author: 1,
-            comments: [3,4]
-        },
-        {
-            id: 3,
-            title: 'Post 3',
-            text: 'Test description 3',
-            author: 2,
-            comments: []
+    async findAll(): Promise<Posts[]> {
+        const getPosts = await this.postModel.find().exec();
+        for (const post of getPosts) {
+            const comments = [];
+            for (const commentId of post.comments) {
+                comments.push(await this.commentsService.findById(commentId.toString()));
+            }
+            post.comments = comments;
         }
-    ]
-
-    async findAll(): Promise<Posts[]> {;
-        return this.postModel.find().exec();
+        return getPosts;
     }
 
     async findById(id: string): Promise<Posts> {
-        return this.postModel.findById(id);
+        const post = await this.postModel.findById(id);
+        const comments = [];
+        for (const commentId of post.comments) {
+            comments.push(await this.commentsService.findById(commentId.toString()));
+        }
+        post.comments = comments;
+        return post;
     }
 
     async createPost(createPost: CreatePostDto): Promise<Posts> {
@@ -63,9 +55,10 @@ export class PostsService {
         return this.postModel.findByIdAndRemove(id);
     }
 
-    addCommentToPost(idPost: string, idComment: string) {
-        const post = this.posts.find(item => item.id === +idPost);
-        post.comments.push(+idComment);
-        return 'Comment added';
+    async addCommentToPost(idPost: string, createComment: CreateCommentDto) {
+        const newComment = await this.commentsService.createComment(createComment);
+        const targetPost = await this.postModel.findById(idPost);
+        targetPost.comments.push(newComment._id);
+        return targetPost.save();
     }
 }

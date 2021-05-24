@@ -1,5 +1,6 @@
-import { Controller, HttpCode, HttpStatus, Get, Param } from '@nestjs/common';
+import { Controller, HttpCode, HttpStatus, Get, Param, Body, Post } from '@nestjs/common';
 import { CommentsService } from './comments.service';
+import { CreateCommentDto } from './dto/create-comment.dto';
 
 @Controller('comments')
 export class CommentsController {
@@ -7,7 +8,7 @@ export class CommentsController {
 
     @HttpCode(HttpStatus.OK)
     @Get()
-    getAllComments(): Array<{}> {
+    getAllComments() {
       return this.commentsService.findAll();
     }
 
@@ -15,5 +16,11 @@ export class CommentsController {
     @Get(':id')
     getComment(@Param('id') id: string): Object {
       return this.commentsService.findById(id);
+    }
+
+    @HttpCode(HttpStatus.CREATED)
+    @Post()
+    createComment(@Body() createComment: CreateCommentDto) {
+      return this.commentsService.createComment(createComment);
     }
 }
