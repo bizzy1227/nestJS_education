@@ -40,7 +40,7 @@ export class PostsController {
     }
 
     @HttpCode(HttpStatus.CREATED)
-    @Post(':idPost')
+    @Post(':idPost/addComment')
     addCommentToPost(@Param('idPost') idPost: string, @Body() createComment: CreateCommentDto) {
         return this.postService.addCommentToPost(idPost, createComment);
     }

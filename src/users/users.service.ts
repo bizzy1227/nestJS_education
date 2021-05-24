@@ -1,63 +1,44 @@
 import { Injectable } from '@nestjs/common';
+import { InjectModel } from '@nestjs/mongoose';
+import { User, UserDocument } from './schemas/user.schema';
+import { Model } from 'mongoose';
+import { CreateUserDto } from './dto/create-user.dto';
+import { UpdateUserDto } from './dto/update-user.dto';
 
 @Injectable()
 export class UsersService {
-    private users = [
-        {
-            id: 1,
-            name: 'User 1',
-            email: 'User1@sss.sss'
-        },
-        {
-            id: 2,
-            name: 'User 2',
-            email: 'User2@sss.sss'
-        },
-        {
-            id: 3,
-            name: 'User 3',
-            email: 'User3@sss.sss'
-        },
-        {
-            id: 4,
-            name: 'User 4',
-            email: 'User4@sss.sss'
-        }
-    ]
-
-    findAll(): Array<{}> {
-        return this.users;
+    constructor(
+        @InjectModel(User.name) private userModel: Model<UserDocument>
+    ) {
+        
     }
 
-    findById(id: string): Object {
-        return this.users.find((item: any) => item.id === +id);
+    async findAll(): Promise<User[]> {
+        return this.userModel.find().exec();
     }
 
-    createUser(createUser): string {
-        const newUser = {
-            id: Date.now(),
+    async findById(id: string): Promise<User>  {
+        return this.userModel.findById(id);
+    }
+
+    async createUser(createUser: CreateUserDto): Promise<User> {
+        const newUser = new this.userModel({
             name: createUser.name,
             email: createUser.email
-        }
-        this.users.push(newUser);
-        return 'User created';
+        });
+        return newUser.save();
     }
 
-    updateUser(id: string, updateUser): string {
-        this.users.map(user => {
-            if (user.id === +id) {
-                if (updateUser.name) user.name = updateUser.name;
-                if (updateUser.email) user.email = updateUser.email;
-            }
-        })
-        return 'User updated';
+    async updateUser(id: string, updateUser: UpdateUserDto): Promise<User> {
+        return this.userModel.findByIdAndUpdate(id, updateUser);
     }
 
-    removeUser(id: string): string {
-        const userIndex = this.users.findIndex((item: any) => item.id === +id);
-        if (userIndex >= 0) {
-          this.users.splice(userIndex, 1);
-        }
-        return 'User deleted';
+    async removeUser(id: string): Promise<User> {
+        return this.userModel.findByIdAndRemove(id);
+    }
+
+    async getCurrentUser(): Promise<User> {
+        const users = await this.userModel.find().exec();
+        return users[Math.floor(Math.random() * users.length)]._id;
     }
 }

@@ -5,6 +5,8 @@ export type PostDocument = Posts & Document;
 
 @Schema()
 export class Posts {
+  _id: string;
+
   @Prop()
   title: string;
 
